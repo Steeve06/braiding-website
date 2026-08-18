@@ -1,10 +1,94 @@
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.test import TestCase
-
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase 
 from core.models import Booking, GalleryImage, Review, Style
 
+class StyleApiTests(APITestCase):
+    def test_list_only_returns_active_styles(self):
+        make_style(slug="active-style", is_active=True)
+        make_style(slug="inactive-style", name="Hidden Style", is_active=False)
 
+        response = self.client.get(reverse("style-list"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["slug"], "active-style")
+
+    def test_category_filter_narrows_results(self):
+        make_style(slug="knotless-style", category=Style.Category.KNOTLESS_BRAIDS)
+        make_style(slug="cornrow-style", name="Cornrows", category=Style.Category.CORNROWS)
+
+        response = self.client.get(reverse("style-list"), {"category": Style.Category.CORNROWS})
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["slug"], "cornrow-style")
+
+
+class ReviewApiTests(APITestCase):
+    def test_list_only_returns_approved_reviews(self):
+        style = make_style()
+        Review.objects.create(client_name="Approved", rating=5, comment="Great", style=style, is_approved=True)
+        Review.objects.create(client_name="Pending", rating=3, comment="Ok", style=style, is_approved=False)
+
+        response = self.client.get(reverse("review-list"))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["client_name"], "Approved")
+
+    def test_create_ignores_client_supplied_is_approved(self):
+        style = make_style()
+        payload = {
+            "client_name": "New Client",
+            "rating": 5,
+            "comment": "Sneaky attempt",
+            "style": style.id,
+            "is_approved": True,
+        }
+
+        response = self.client.post(reverse("review-list"), payload)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertFalse(response.data["is_approved"])
+
+
+class BookingApiTests(APITestCase):
+    def test_create_booking_succeeds(self):
+        style = make_style()
+        payload = {
+            "client_name": "Jane Doe",
+            "client_email": "jane@example.com",
+            "style": style.id,
+            "requested_datetime": "2026-10-01T10:00:00Z",
+        }
+
+        response = self.client.post(reverse("booking-list"), payload)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["status"], Booking.Status.PENDING)
+
+    def test_overlapping_booking_is_rejected(self):
+        style = make_style()
+        Booking.objects.create(
+            client_name="Existing Client",
+            client_email="existing@example.com",
+            style=style,
+            requested_datetime="2026-10-01T10:00:00Z",
+        )
+        payload = {
+            "client_name": "Jane Doe",
+            "client_email": "jane@example.com",
+            "style": style.id,
+            "requested_datetime": "2026-10-01T10:00:00Z",
+        }
+
+        response = self.client.post(reverse("booking-list"), payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("non_field_errors", response.data)
+        
+        
 def make_style(**overrides):
     defaults = {
         "name": "Knotless Braids",
@@ -20,7 +104,7 @@ def make_style(**overrides):
     return Style.objects.create(**defaults)
 
 
-class StyleModelTests(TestCase):
+class StyleModelTests(APITestCase):
     def test_string_representation_is_style_name(self):
         style = make_style()
         self.assertEqual(str(style), "Knotless Braids")
@@ -32,7 +116,7 @@ class StyleModelTests(TestCase):
                 make_style(name="Duplicate Slug Style")
 
 
-class ReviewModelTests(TestCase):
+class ReviewModelTests(APITestCase):
     def test_is_approved_defaults_to_false(self):
         style = make_style()
         review = Review.objects.create(client_name="Jane Doe", rating=5, comment="Great work!", style=style)
@@ -51,7 +135,7 @@ class ReviewModelTests(TestCase):
             review.full_clean()
 
 
-class BookingModelTests(TestCase):
+class BookingModelTests(APITestCase):
     def test_status_defaults_to_pending(self):
         style = make_style()
         booking = Booking.objects.create(
@@ -74,7 +158,7 @@ class BookingModelTests(TestCase):
             with transaction.atomic():
                 style.delete()
 
-class GalleryImageModelTests(TestCase):
+class GalleryImageModelTests(APITestCase):
     def test_string_representation_falls_back_when_no_caption(self):
         image = GalleryImage.objects.create(caption="")
         self.assertEqual(str(image), f"Gallery photo #{image.pk}")
