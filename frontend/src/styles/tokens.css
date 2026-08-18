@@ -1,0 +1,32 @@
+:root {
+  /* Color palette — warm, neutral, editorial */
+  --color-background: #faf7f2;
+  --color-surface: #ffffff;
+  --color-text-primary: #2b2320;
+  --color-text-secondary: #6b5f58;
+  --color-accent: #a15c38;
+  --color-accent-hover: #82492c;
+  --color-border: #e4ddd3;
+
+  /* Typography */
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.75rem;
+  --font-size-2xl: 2.5rem;
+
+  /* Spacing scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+
+  /* Misc */
+  --radius-base: 4px;
+  --shadow-subtle: 0 2px 8px rgba(43, 35, 32, 0.08);
+  --transition-base: 150ms ease-in-out;
+}

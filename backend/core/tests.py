@@ -43,7 +43,7 @@ class ReviewApiTests(APITestCase):
             "client_name": "New Client",
             "rating": 5,
             "comment": "Sneaky attempt",
-            "style": style.id,
+            "style": style.id, # type: ignore
             "is_approved": True,
         }
 
@@ -59,7 +59,7 @@ class BookingApiTests(APITestCase):
         payload = {
             "client_name": "Jane Doe",
             "client_email": "jane@example.com",
-            "style": style.id,
+            "style": style.id, # type: ignore
             "requested_datetime": "2026-10-01T10:00:00Z",
         }
 
@@ -79,7 +79,7 @@ class BookingApiTests(APITestCase):
         payload = {
             "client_name": "Jane Doe",
             "client_email": "jane@example.com",
-            "style": style.id,
+            "style": style.id, # type: ignore
             "requested_datetime": "2026-10-01T10:00:00Z",
         }
 
