@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 
@@ -10,10 +11,40 @@ const navLinks = [
 ];
 
 function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  function toggleMenu() {
+    setIsMenuOpen((previousState) => !previousState);
+  }
+
+  function closeMenu() {
+    setIsMenuOpen(false);
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.brand}>Braids by Miah</div>
-      <nav className={styles.nav} aria-label="Main navigation">
+
+      <button
+        type="button"
+        className={styles.menuToggle}
+        aria-expanded={isMenuOpen}
+        aria-controls="primary-navigation"
+        aria-label={
+          isMenuOpen ? "Close navigation menu" : "Open navigation menu"
+        }
+        onClick={toggleMenu}
+      >
+        <span className={styles.menuIconBar}></span>
+        <span className={styles.menuIconBar}></span>
+        <span className={styles.menuIconBar}></span>
+      </button>
+
+      <nav
+        id="primary-navigation"
+        className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ""}`}
+        aria-label="Main navigation"
+      >
         <ul className={styles.navList}>
           {navLinks.map((link) => (
             <li key={link.to}>
@@ -25,6 +56,7 @@ function Header() {
                     ? `${styles.navLink} ${styles.navLinkActive}`
                     : styles.navLink
                 }
+                onClick={closeMenu}
               >
                 {link.label}
               </NavLink>
@@ -32,6 +64,7 @@ function Header() {
           ))}
         </ul>
       </nav>
+
       <NavLink to="/book-now" className={styles.ctaButton}>
         Book Now
       </NavLink>

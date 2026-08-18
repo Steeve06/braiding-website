@@ -5,7 +5,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-lg);
   background-color: var(--color-surface);
@@ -17,11 +16,37 @@
   font-size: var(--font-size-lg);
   font-weight: 600;
   color: var(--color-text-primary);
+  margin-right: var(--space-xl);
+}
+
+.menuToggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menuIconBar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-text-primary);
+}
+
+.nav {
+  flex: 1 1 auto;
 }
 
 .navList {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-md);
   list-style: none;
 }
@@ -60,5 +85,41 @@
 }
 
 .ctaButton:hover {
+  color: var(--color-surface);
   background-color: var(--color-accent-hover);
+}
+
+@media (max-width: 768px) {
+  .menuToggle {
+    display: flex;
+    order: 2;
+  }
+
+  .brand {
+    order: 1;
+  }
+
+  .ctaButton {
+    order: 3;
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .nav {
+    order: 4;
+    flex-basis: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-base);
+  }
+
+  .navOpen {
+    max-height: 300px;
+  }
+
+  .navList {
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+  }
 }

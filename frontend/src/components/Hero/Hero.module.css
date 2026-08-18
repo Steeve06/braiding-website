@@ -1,0 +1,112 @@
+.hero {
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6b4226 0%, #a15c38 50%, #c98a56 100%);
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 14, 10, 0.45);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #ffffff;
+  padding: var(--space-xl) var(--space-md);
+  max-width: 640px;
+}
+
+.heroEyebrow {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.heroHeading {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  color: #ffffff;
+}
+
+.heroLocation {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-md);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.availabilityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+  color: #ffffff;
+  margin-bottom: var(--space-lg);
+}
+
+.badgeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #6fbf73;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.heroCta {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-base);
+  text-decoration: none;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.heroCta:hover {
+  color: var(--color-surface);
+  background-color: var(--color-accent);
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 70vh;
+  }
+
+  .heroHeading {
+    font-size: var(--font-size-xl);
+  }
+}

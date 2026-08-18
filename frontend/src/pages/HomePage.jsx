@@ -1,9 +1,16 @@
+import Hero from "../components/Hero/Hero.jsx";
+
 function HomePage() {
   return (
-    <section>
-      <h1>Welcome to Braids by Miah</h1>
-      <p>Home page content coming in Sprint 6.</p>
-    </section>
+    <>
+      <Hero />
+      <section>
+        <p>
+          More homepage content (styles preview, testimonials, etc.) is coming
+          in later sprints.
+        </p>
+      </section>
+    </>
   );
 }
 
